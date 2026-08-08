@@ -1,28 +1,30 @@
-# Demo repo: toy Flask signup endpoint
+# Demo repo: toy Flask signup API
 
-This is the small, real repo used to demo the agent swarm end-to-end
-(Build Order step 10 in the project brief). It's intentionally tiny: one
-route with a real bug and a test suite that already encodes the fix.
+The target repo used to demo the agent swarm end-to-end. Intentionally tiny —
+the Coder agent rewrites whole files, so every file here stays small enough to
+regenerate inside the provider's output-token budget.
 
-`POST /signup` currently accepts any payload -- no email format check, no
-required-password check. Two of the three tests in `test_app.py` fail
-against the current `app.py`.
+- `app.py` — `POST /signup` (validates email + password) and `GET /users`
+- `validators.py` — pure validation helpers, no Flask import
+- `test_app.py`, `test_validators.py` — the suite the Tester agent runs
 
-## Demo task
+**All tests pass as-is.** That's on purpose: the swarm never pushes its changes
+back, so this repo is byte-identical on every run. A failing test here would
+stay failing and sink every subsequent demo. Demo tasks are therefore additive
+or behaviour-preserving, and "done" means *the change didn't break anything* —
+read the diff to check the new behaviour itself.
 
-Submit this task against this repo's path from the Agent Swarm UI:
+For the red→green retry-loop demo, use the companion repo with a deliberately
+failing suite instead.
 
-> **Description:** Add input validation to the /signup endpoint: reject
-> requests with an invalid email format or a missing password with a 400
-> response.
->
-> **Repo path:** the absolute path to this `demo_repo` folder.
+## Submitting a task
 
-Expected result: the pipeline runs Planner → Coder → Tester (retrying up
-to `MAX_TEST_RETRIES` times if the first attempt doesn't pass) → Reviewer,
-and finishes `done` with all three tests in `test_app.py` passing.
+The swarm takes a **public GitHub URL**, not a local path. Paste this repo's
+URL into the dashboard along with a description that **names the file to
+change** (e.g. "add a GET /health endpoint to app.py") — the Planner passes
+that filename through to the Coder's file selection.
 
-## Running the tests yourself (outside the swarm)
+## Running the tests yourself
 
 ```
 pip install -r requirements.txt
