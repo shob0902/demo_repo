@@ -32,5 +32,16 @@ def list_users():
     return jsonify({"users": [u["email"] for u in users]}), 200
 
 
+@app.errorhandler(404)
+def handle_404(error):
+    return (
+        jsonify({
+            "error": "Not Found",
+            "message": "The requested URL was not found on the server."
+        }),
+        404,
+    )
+
+
 if __name__ == "__main__":
     app.run(debug=True)

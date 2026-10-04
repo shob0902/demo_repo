@@ -41,3 +41,11 @@ def test_list_users_returns_registered_emails(client):
     resp = client.get("/users")
     assert resp.status_code == 200
     assert VALID_EMAIL in resp.get_json()["users"]
+
+
+def test_unknown_route_returns_json_404(client):
+    resp = client.get("/nonexistent")
+    assert resp.status_code == 404
+    json_data = resp.get_json()
+    assert json_data["error"] == "Not Found"
+    assert "message" in json_data
