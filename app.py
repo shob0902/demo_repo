@@ -9,6 +9,9 @@ from validators import is_valid_email
 
 app = Flask(__name__)
 
+# Maximum number of users allowed
+MAX_USERS = 100
+
 users = []
 
 
@@ -22,6 +25,9 @@ def signup():
         return jsonify({"error": "Password is required"}), 400
     if not is_valid_email(email):
         return jsonify({"error": "Invalid email address"}), 400
+
+    if len(users) >= MAX_USERS:
+        return jsonify({"error": "User limit reached"}), 503
 
     users.append({"email": email, "password": password})
     return jsonify({"status": "ok", "email": email}), 201
