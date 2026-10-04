@@ -41,3 +41,11 @@ def test_list_users_returns_registered_emails(client):
     resp = client.get("/users")
     assert resp.status_code == 200
     assert VALID_EMAIL in resp.get_json()["users"]
+
+
+def test_signup_returns_503_when_user_limit_reached(client):
+    # Fill the users list to the limit
+    for i in range(100):
+        users.append({"email": f"user{i}@example.com", "password": "pwd"})
+    resp = client.post("/signup", json={"email": VALID_EMAIL, "password": VALID_PASSWORD})
+    assert resp.status_code == 503
