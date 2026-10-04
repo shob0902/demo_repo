@@ -5,7 +5,7 @@ stays well under the output-token ceiling documented in the main README.
 """
 from flask import Flask, jsonify, request
 
-from validators import is_valid_email
+from validators import is_valid_email, is_strong_password
 
 app = Flask(__name__)
 
@@ -20,6 +20,8 @@ def signup():
 
     if not password:
         return jsonify({"error": "Password is required"}), 400
+    if not is_strong_password(password):
+        return jsonify({"error": "Password is too weak"}), 400
     if not is_valid_email(email):
         return jsonify({"error": "Invalid email address"}), 400
 
